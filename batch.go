@@ -16,6 +16,19 @@ type Request struct {
 	Body    map[string]string
 }
 
+type formattedResponse struct {
+	Status        string
+	Header        map[string][]string
+	Body          string
+	ContentLength int64
+}
+
+type response struct {
+	Index    int
+	Response http.Response
+	Err      error
+}
+
 type batch struct {
 	Requests []*http.Request
 }
@@ -69,13 +82,13 @@ func (b *batch) Send() []formattedResponse {
 func format(responses []response) []formattedResponse {
 	formattedResponses := []formattedResponse{}
 	for _, res := range responses {
-		body, err := ioutil.ReadAll(res.GetResponse().Body)
+		body, err := ioutil.ReadAll(res.Response.Body)
 		explain(err)
 		formattedResponse := formattedResponse{
-			Status:        res.GetResponse().Status,
-			Header:        res.GetResponse().Header,
+			Status:        res.Response.Status,
+			Header:        res.Response.Header,
 			Body:          string(body),
-			ContentLength: res.GetResponse().ContentLength,
+			ContentLength: res.Response.ContentLength,
 		}
 		formattedResponses = append(formattedResponses, formattedResponse)
 	}
