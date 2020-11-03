@@ -23,34 +23,34 @@ package main
 import (
     "fmt"
     "github.com/nicholasvuono/wreckhttp"
- )
+)
 
 func main() {
     var requests = []Request{
-      {
-		    Method:  "GET",
-		    URL:     "https://httpbin.org/get",
-		    Headers: nil,
-		    Body:    nil,
+    	{
+	    Method:  "GET",
+	    URL:     "https://httpbin.org/get",
+	    Headers: nil,
+            Body:    nil,
+	},
+	{
+	    Method: "POST",
+	    URL:    "https://httpbin.org/post",
+	    Headers: map[string][]string{
+	        "Accept": {"application/json"},
 	    },
-	    {
-		    Method: "POST",
-		    URL:    "https://httpbin.org/post",
-		    Headers: map[string][]string{
-			    "Accept": {"application/json"},
-		    },
-		    Body: map[string]string{
-			    "name":  "Test API Guy",
-			    "email": "testapiguy@email.com",
-		    },
+	    Body: map[string]string{
+		"name":  "Test API Guy",
+		"email": "testapiguy@email.com",
 	    },
+	},
     }
   
     batch, err := Batch(requests)
-	  if err != nil {
-		  fmt.Println(err)
-	  }
-	  responses := batch.Send()
-	  fmt.Println(responses)
+    if err != nil {
+        fmt.Println(err)
+    }
+    responses := batch.Send()
+    fmt.Println(responses)
 }
 ```
