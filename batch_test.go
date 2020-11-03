@@ -11,13 +11,13 @@ var tests = []func(t *testing.T){
 }
 
 var requests = []Request{
-	Request{
+	{
 		Method:  "GET",
 		URL:     "https://httpbin.org/get",
 		Headers: nil,
 		Body:    nil,
 	},
-	Request{
+	{
 		Method: "POST",
 		URL:    "https://httpbin.org/post",
 		Headers: map[string][]string{
