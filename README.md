@@ -3,7 +3,7 @@
 
 A simple http batch extension for the wreck load testing tool
 
-The aim of this project is to provide the ability to send a batch of http requests concurrently and in parallel, providing responses in a readable format with information that we care about. In addition to this, the pacakage tries to make constructing the array of requests as easy and readable as possible.
+The aim of this project is to provide the ability to send a batch of HTTP requests concurrently and in parallel, providing responses in a readable format with information that we care about. In addition to this, the pacakage tries to make constructing the array of requests as easy and readable as possible.
 
 ## Features
 
