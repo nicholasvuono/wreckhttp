@@ -9,6 +9,7 @@ import (
 	"sort"
 )
 
+//Request holds information to create a new http request.
 type Request struct {
 	Method  string
 	URL     string
@@ -16,6 +17,12 @@ type Request struct {
 	Body    map[string]string
 }
 
+//batch holds a slice(array) or request to be sent concurrently and in parallel.
+type batch struct {
+	Requests []*http.Request
+}
+
+//formattedResponse holds readable fieds of a http.Response object.
 type formattedResponse struct {
 	Status        string
 	Header        map[string][]string
@@ -23,22 +30,54 @@ type formattedResponse struct {
 	ContentLength int64
 }
 
+//response is a data structure to help us keep track of http.Responses received during the batch request.
 type response struct {
 	Index    int
 	Response http.Response
 	Err      error
 }
 
-type batch struct {
-	Requests []*http.Request
-}
-
+//Batch is a constructor function for the batch struct.
 func Batch(requests []Request) (*batch, error) {
 	batch := batch{}
 	err := batch.SetRequests(requests)
 	return &batch, err
 }
 
+//GetRequests is a getter function for the batch's Requests field.
+func (b *batch) GetRequests() []*http.Request {
+	return b.Requests
+}
+
+//SetRequests is a setter function for batch's Requests field.
+func (b *batch) SetRequests(requests []Request) error {
+	reqs := []*http.Request{}
+	for _, req := range requests {
+		body, err := json.Marshal(req.Body)
+		if err != nil {
+			return err
+		}
+		request, err := http.NewRequest(
+			req.Method,
+			req.URL,
+			bytes.NewBuffer(body),
+		)
+		if err != nil {
+			return err
+		}
+		request.Header = req.Headers
+		reqs = append(reqs, request)
+	}
+	b.Requests = reqs
+	return nil
+}
+
+//Formats the batch struct and its fields into a string.
+func (b *batch) String() string {
+	return fmt.Sprintf("%#v", b)
+}
+
+//Sends a batch of requests concurrently and in parallel, gathering responses, ordering them, and formattign them.
 func (b *batch) Send() []formattedResponse {
 
 	client := http.DefaultClient
@@ -79,6 +118,7 @@ func (b *batch) Send() []formattedResponse {
 	return format(responses)
 }
 
+//Formats responses into a more readable format, capturing the specific fields we care about.
 func format(responses []response) []formattedResponse {
 	formattedResponses := []formattedResponse{}
 	for _, res := range responses {
@@ -92,36 +132,5 @@ func format(responses []response) []formattedResponse {
 		}
 		formattedResponses = append(formattedResponses, formattedResponse)
 	}
-
 	return formattedResponses
-}
-
-func (b *batch) GetRequests() []*http.Request {
-	return b.Requests
-}
-
-func (b *batch) SetRequests(requests []Request) error {
-	reqs := []*http.Request{}
-	for _, req := range requests {
-		body, err := json.Marshal(req.Body)
-		if err != nil {
-			return err
-		}
-		request, err := http.NewRequest(
-			req.Method,
-			req.URL,
-			bytes.NewBuffer(body),
-		)
-		if err != nil {
-			return err
-		}
-		request.Header = req.Headers
-		reqs = append(reqs, request)
-	}
-	b.Requests = reqs
-	return nil
-}
-
-func (b *batch) String() string {
-	return fmt.Sprintf("%#v", b)
 }
