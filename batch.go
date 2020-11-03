@@ -20,10 +20,10 @@ type batch struct {
 	Requests []*http.Request
 }
 
-func Batch(requests []Request) *batch {
+func Batch(requests []Request) (*batch, error) {
 	batch := batch{}
-	batch.SetRequests(requests)
-	return &batch
+	err := batch.SetRequests(requests)
+	return &batch, err
 }
 
 func (b *batch) Send() []formattedResponse {
@@ -87,20 +87,26 @@ func (b *batch) GetRequests() []*http.Request {
 	return b.Requests
 }
 
-func (b *batch) SetRequests(requests []Request) {
+func (b *batch) SetRequests(requests []Request) error {
 	reqs := []*http.Request{}
 	for _, req := range requests {
 		body, err := json.Marshal(req.Body)
-		explain(err)
+		if err != nil {
+			return err
+		}
 		request, err := http.NewRequest(
 			req.Method,
 			req.URL,
 			bytes.NewBuffer(body),
 		)
+		if err != nil {
+			return err
+		}
 		request.Header = req.Headers
 		reqs = append(reqs, request)
 	}
 	b.Requests = reqs
+	return nil
 }
 
 func (b *batch) String() string {
