@@ -21,7 +21,7 @@ var requests = []Request{
 		Method: "POST",
 		URL:    "https://httpbin.org/post",
 		Headers: map[string][]string{
-			"Accept": []string{"application/json"},
+			"Accept": {"application/json"},
 		},
 		Body: map[string]string{
 			"name":  "Test API Guy",
