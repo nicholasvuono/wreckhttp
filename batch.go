@@ -77,7 +77,7 @@ func (b *batch) String() string {
 	return fmt.Sprintf("%#v", b)
 }
 
-//Sends a batch of requests concurrently and in parallel, gathering responses, ordering them, and formattign them.
+//Sends a batch of requests concurrently and in parallel, gathering responses, ordering them, and formatting them.
 func (b *batch) Send() []formattedResponse {
 
 	client := http.DefaultClient
