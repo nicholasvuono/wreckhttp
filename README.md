@@ -13,7 +13,7 @@ The aim of this project is to provide the ability to send a batch of HTTP reques
 
 ## How it works
 
-Behind the scenes it uses an array of an easily readable Request data structs that eventually maps out to http.NewRequests(). Then it sets a concurrency limit based on the size of the batch of requests and sends them concurrently and in parralell. Once the requests are finished it orders and formats the received responses. This may make a bit more sense afer reading the code and following the below example:
+Behind the scenes it uses an array of an easily readable Request data structs that eventually maps out to http.NewRequests(). Then it sets a concurrency limit based on the size of the batch of requests and sends them concurrently and in parallel. Once the requests are finished it orders and formats the received responses. This may make a bit more sense afer reading the code and following the below example:
 
 ## Simplest Working Example
 
